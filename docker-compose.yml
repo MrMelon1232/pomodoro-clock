@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+    backend:
+        build: ./server
+        container_name: pomodoro-backend
+        ports:
+            - "${PORT}:${PORT}"
+        environment:
+            - PORT=${PORT}
+            - CORS_ORIGIN=${CORS_ORIGIN}
+        networks:
+            - pomodoro-net
+
+    frontend:
+        build: ./client
+        container_name: pomodoro-frontend
+        ports:
+            - "${VITE_FRONTEND_PORT}:${VITE_FRONTEND_PORT}"
+        environment:
+            - VITE_SERVER_URL=${VITE_SERVER_URL}
+            - VITE_FRONTEND_PORT=${VITE_FRONTEND_PORT}
+        depends_on:
+            - backend
+        networks:
+            - pomodoro-net
+
+networks:
+    pomodoro-net:
+        driver: bridge
