@@ -63,7 +63,6 @@ export function calculateProgress(timeLeft, totalDuration) {
  * @param {number} cycleCount - Number of completed work sessions.
  * @returns {{ nextMode: string, nextCycle: number }} Object containing next mode and updated cycle count.
  */
-
 export function getNextMode(currentMode, cycleCount) {
     if (currentMode === Modes.WORK) {
         const nextCycle = cycleCount + 1;

@@ -33,7 +33,7 @@ export function usePomodoro(settings) {
     );
     const [isRunning, setIsRunning] = useState(false);
 
-    // Time effect
+    // Use effect to decrement our timer after start
     useEffect(() => {
         // Exit if our timer is not running
         if (!isRunning) return;
@@ -46,7 +46,7 @@ export function usePomodoro(settings) {
         return () => clearInterval(interval);
     }, [isRunning]);
 
-    // Handle transitions
+    // Handle transitions between modes after time runs out
     useEffect(() => {
         // Prevents auto switch if the timer is not running
         if (!isRunning && timeLeft === 0) return;
