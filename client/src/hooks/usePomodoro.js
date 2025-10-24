@@ -14,7 +14,6 @@ import {
  * @param {object} settings - User settings containing durations for each mode (in seconds).
  * @returns {{
  *   mode: string,
- *   timeLeft: number,
  *   formattedTime: string,
  *   isRunning: boolean,
  *   progress: number,
@@ -89,6 +88,7 @@ export function usePomodoro(settings) {
     return {
         mode,
         formattedTime,
+        isRunning,
         progress,
         start,
         stop,
