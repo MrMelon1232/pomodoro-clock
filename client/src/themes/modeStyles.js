@@ -1,5 +1,5 @@
 export const MODE_STYLES = {
-    FOCUS: {
+    WORK: {
         color: "#ef4444",
         bg: "bg-red-500",
         glow: "shadow-[0_0_30px_rgba(239,68,68,0.6)]",
