@@ -20,7 +20,8 @@ import {
  *   progress: number,
  *   start: function,
  *   stop: function,
- *   reset: function
+ *   reset: function,
+ *   changeMode: function
  * }} Object containing the current timer state and control functions.
  */
 export function usePomodoro(settings) {
@@ -67,6 +68,12 @@ export function usePomodoro(settings) {
         setTimeLeft(getModeDuration(Modes.WORK, settings));
     };
 
+    const changeMode = (newMode) => {
+        setIsRunning(false);
+        setMode(newMode);
+        setTimeLeft(getModeDuration(newMode, settings));
+    };
+
     // Derived values
     const formattedTime = formatTime(timeLeft);
     const progress = calculateProgress(
@@ -84,5 +91,6 @@ export function usePomodoro(settings) {
         start,
         stop,
         reset,
+        changeMode,
     };
 }
