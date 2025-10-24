@@ -88,9 +88,7 @@ export function usePomodoro(settings) {
     // Return everything for the UI
     return {
         mode,
-        timeLeft,
         formattedTime,
-        isRunning,
         progress,
         start,
         stop,
