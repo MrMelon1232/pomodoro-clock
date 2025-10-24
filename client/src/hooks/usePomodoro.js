@@ -5,7 +5,7 @@ import {
     calculateProgress,
     getNextMode,
     getModeDuration,
-} from "../utils/timerUtils.js";
+} from "../utils/timerUtils";
 /**
  * Pomodoro timer logic hook.
  *
