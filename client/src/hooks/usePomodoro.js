@@ -48,6 +48,9 @@ export function usePomodoro(settings) {
 
     // Handle transitions
     useEffect(() => {
+        // Prevents auto switch if the timer is not running
+        if (!isRunning && timeLeft === 0) return;
+
         // Stop the timer when it reaches 0
         if (timeLeft === 0) {
             // Update our mode, current cycle, and the time left
@@ -56,7 +59,7 @@ export function usePomodoro(settings) {
             setCycleCount(nextCycle);
             setTimeLeft(getModeDuration(nextMode, settings));
         }
-    }, [timeLeft, mode, cycleCount, settings]);
+    }, [timeLeft, mode, cycleCount, settings, isRunning]);
 
     // Handlers
     const start = () => setIsRunning(true);
@@ -68,6 +71,7 @@ export function usePomodoro(settings) {
         setTimeLeft(getModeDuration(Modes.WORK, settings));
     };
 
+    // Change mode
     const changeMode = (newMode) => {
         setIsRunning(false);
         setMode(newMode);
