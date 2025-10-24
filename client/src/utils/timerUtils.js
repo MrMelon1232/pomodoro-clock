@@ -15,7 +15,7 @@
  */
 
 // Enum for all existing modes
-export const Modes = {
+export const MODES = {
     WORK: "WORK",
     SHORT_BREAK: "SHORT_BREAK",
     LONG_BREAK: "LONG_BREAK",
@@ -23,9 +23,9 @@ export const Modes = {
 
 // Enum for default time for each mode
 export const DEFAULT_DURATIONS = {
-    [Modes.WORK]: 25 * 60,
-    [Modes.SHORT_BREAK]: 5 * 60,
-    [Modes.LONG_BREAK]: 15 * 60,
+    [MODES.WORK]: 25 * 60,
+    [MODES.SHORT_BREAK]: 5 * 60,
+    [MODES.LONG_BREAK]: 15 * 60,
 };
 
 /**
@@ -64,13 +64,13 @@ export function calculateProgress(timeLeft, totalDuration) {
  * @returns {{ nextMode: string, nextCycle: number }} Object containing next mode and updated cycle count.
  */
 export function getNextMode(currentMode, cycleCount) {
-    if (currentMode === Modes.WORK) {
+    if (currentMode === MODES.WORK) {
         const nextCycle = cycleCount + 1;
         const nextMode =
-            nextCycle % 4 === 0 ? Modes.LONG_BREAK : Modes.SHORT_BREAK;
+            nextCycle % 4 === 0 ? MODES.LONG_BREAK : MODES.SHORT_BREAK;
         return { nextMode, nextCycle };
     } else {
-        return { nextMode: Modes.WORK, nextCycle: cycleCount };
+        return { nextMode: MODES.WORK, nextCycle: cycleCount };
     }
 }
 

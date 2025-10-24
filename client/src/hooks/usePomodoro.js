@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-    Modes,
+    MODES,
     formatTime,
     calculateProgress,
     getNextMode,
@@ -26,10 +26,10 @@ import {
  */
 export function usePomodoro(settings) {
     // States
-    const [mode, setMode] = useState(Modes.WORK);
+    const [mode, setMode] = useState(MODES.WORK);
     const [cycleCount, setCycleCount] = useState(0);
     const [timeLeft, setTimeLeft] = useState(
-        getModeDuration(Modes.WORK, settings)
+        getModeDuration(MODES.WORK, settings)
     );
     const [isRunning, setIsRunning] = useState(false);
 
@@ -66,9 +66,9 @@ export function usePomodoro(settings) {
     const stop = () => setIsRunning(false);
     const reset = () => {
         setIsRunning(false);
-        setMode(Modes.WORK);
+        setMode(MODES.WORK);
         setCycleCount(0);
-        setTimeLeft(getModeDuration(Modes.WORK, settings));
+        setTimeLeft(getModeDuration(MODES.WORK, settings));
     };
 
     // Change mode
