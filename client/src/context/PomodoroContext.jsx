@@ -29,7 +29,7 @@ export const PomodoroProvider = ({ children }) => {
     );
 
     // Function to remove tasks
-    const removeTask = (taskId) => {
+    const removeTask = useCallback((taskId) => {
         setTasks((prev) => {
             // Filter out the task we want to remove
             const filtered = prev.filter((task) => task.id !== taskId);
@@ -40,10 +40,10 @@ export const PomodoroProvider = ({ children }) => {
                 order: index + 1,
             }));
         });
-    };
+    }, []);
 
     // Function to mark a completed pomodoro for a task
-    const completePomodoroForTask = () => {
+    const completePomodoroForTask = useCallback(() => {
         // Exit if we have no active task
         if (!activeTask) return;
 
@@ -77,19 +77,22 @@ export const PomodoroProvider = ({ children }) => {
 
             return updatedTasks;
         });
-    };
+    }, [activeTask]);
 
     // Function to manually set new active task
-    const manuallySetActiveTask = (taskId) => {
-        const task = tasks.find((task) => task.id === taskId);
-        if (task) setActiveTask(task);
-    };
+    const manuallySetActiveTask = useCallback(
+        (taskId) => {
+            const task = tasks.find((task) => task.id === taskId);
+            if (task) setActiveTask(task);
+        },
+        [tasks]
+    );
 
     // Function to reset all current tasks
-    const resetTasks = () => {
+    const resetTasks = useCallback(() => {
         setTasks([]);
         setActiveTask(null);
-    };
+    }, []);
 
     return (
         <PomodoroContext.Provider
