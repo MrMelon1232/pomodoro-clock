@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useCallback } from "react";
 
 // Pomodoro context to be shared between timer and task
 const PomodoroContext = createContext();
@@ -10,20 +10,23 @@ export const PomodoroProvider = ({ children }) => {
     const [activeTask, setActiveTask] = useState(null);
 
     // Function to add a task
-    const addTask = (title, requiredPomodoros = 1, notes) => {
-        const newTask = {
-            id: Date.now(),
-            title,
-            notes,
-            requiredPomodoros,
-            completedPomodoros: 0,
-            done: false,
-            order: tasks.length + 1,
-        };
+    const addTask = useCallback(
+        (title, requiredPomodoros = 1, notes) => {
+            const newTask = {
+                id: Date.now(),
+                title,
+                notes,
+                requiredPomodoros,
+                completedPomodoros: 0,
+                done: false,
+                order: tasks.length + 1,
+            };
 
-        // Append to our previous state our new task
-        setTasks((prev) => [...prev, newTask]);
-    };
+            // Append to our previous state our new task
+            setTasks((prev) => [...prev, newTask]);
+        },
+        [tasks]
+    );
 
     // Function to remove tasks
     const removeTask = (taskId) => {
@@ -71,6 +74,8 @@ export const PomodoroProvider = ({ children }) => {
             } else {
                 setActiveTask(updatedActiveTask);
             }
+
+            return updatedTasks;
         });
     };
 
@@ -78,6 +83,12 @@ export const PomodoroProvider = ({ children }) => {
     const manuallySetActiveTask = (taskId) => {
         const task = tasks.find((task) => task.id === taskId);
         if (task) setActiveTask(task);
+    };
+
+    // Function to reset all current tasks
+    const resetTasks = () => {
+        setTasks([]);
+        setActiveTask(null);
     };
 
     return (
@@ -89,6 +100,7 @@ export const PomodoroProvider = ({ children }) => {
                 activeTask,
                 setActiveTask: manuallySetActiveTask,
                 completePomodoroForTask,
+                resetTasks,
             }}
         >
             {children}
