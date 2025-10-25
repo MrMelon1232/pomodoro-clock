@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
     MODES,
     formatTime,
@@ -62,21 +62,24 @@ export function usePomodoro(settings) {
     }, [timeLeft, mode, cycleCount, settings, isRunning]);
 
     // Handlers
-    const start = () => setIsRunning(true);
-    const stop = () => setIsRunning(false);
-    const reset = () => {
+    const start = useCallback(() => setIsRunning(true), []);
+    const stop = useCallback(() => setIsRunning(false), []);
+    const reset = useCallback(() => {
         setIsRunning(false);
         setMode(MODES.WORK);
         setCycleCount(0);
         setTimeLeft(getModeDuration(MODES.WORK, settings));
-    };
+    }, [settings]);
 
     // Change mode
-    const changeMode = (newMode) => {
-        setIsRunning(false);
-        setMode(newMode);
-        setTimeLeft(getModeDuration(newMode, settings));
-    };
+    const changeMode = useCallback(
+        (newMode) => {
+            setIsRunning(false);
+            setMode(newMode);
+            setTimeLeft(getModeDuration(newMode, settings));
+        },
+        [settings]
+    );
 
     // Derived values
     const formattedTime = formatTime(timeLeft);
