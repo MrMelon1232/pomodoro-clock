@@ -40,47 +40,49 @@ export const PomodoroProvider = ({ children }) => {
     };
 
     // Function to mark a completed pomodoro for a task
-    const completePomodoroForTask = (taskId) => {
-        setTasks((prev) =>
-            prev.map((task) =>
-                task.id === taskId
+    const completePomodoroForTask = () => {
+        // Exit if we have no active task
+        if (!activeTask) return;
+
+        setTasks((prev) => {
+            const updatedTasks = prev.map((task) =>
+                task.id === activeTask.id
                     ? {
                           ...task,
-                          completePomodoros: task.completePomodoros + 1,
+                          completedPomodoros: task.completedPomodoros + 1,
                           done:
-                              task.completePomodoros + 1 >=
+                              task.completedPomodoros + 1 >=
                               task.requiredPomodoros,
                       }
                     : task
-            )
-        );
-
-        // queue the next tasks as active if the current one is completed
-        const updated = tasks.find((t) => t.id == activeTask.id);
-        if (activeTask && updated.done) queueNextTask();
-    };
-
-    // Function to determine the next tasks based on order
-    const queueNextTask = () => {
-        setActiveTask((prev) => {
-            if (!prev) return null;
-
-            // Check if the next tasks based on order exists in our list of tasks
-            const nextTask = tasks.find(
-                (t) => t.order > prev.order + 1 && !t.done
             );
-            return nextTask || null;
+
+            // Find the updated active task
+            const updatedActiveTask = updatedTasks.find(
+                (task) => task.id === activeTask.id
+            );
+
+            // Find if we need to queue a new tasks as our active
+            if (updatedActiveTask?.done) {
+                const newTask = updatedTasks.find(
+                    (task) => task.order > activeTask.order && !task.done
+                );
+                setActiveTask(newTask || null);
+            } else {
+                setActiveTask(updatedActiveTask);
+            }
         });
     };
 
+    // Function to manually set new active task
     const manuallySetActiveTask = (taskId) => {
-        const task = tasks.find((t) => t.id === taskId);
+        const task = tasks.find((task) => task.id === taskId);
         if (task) setActiveTask(task);
     };
 
     return (
         <PomodoroContext.Provider
-            values={{
+            value={{
                 tasks,
                 addTask,
                 removeTask,
