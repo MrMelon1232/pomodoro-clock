@@ -78,6 +78,25 @@ export const TimerDisplay = (settings) => {
                 ></CircularProgressbar>{" "}
             </div>
 
+            {/* Active task info */}
+            <div className="mt-6 text-center">
+                {activeTask ? (
+                    <div className="bg-espresso/60 rounded-xl px-5 py-3 shadow-inner max-w-sm mx-auto">
+                        <p className="text-cream font-semibold text-lg">
+                            {activeTask.title}
+                        </p>
+                        <p className="text-sand/70 text-sm mt-1">
+                            {activeTask.completedPomodoros}/
+                            {activeTask.requiredPomodoros} 🍅 done
+                        </p>
+                    </div>
+                ) : (
+                    <p className="text-sand/60 text-sm italic mt-2">
+                        No active task — add one to start focusing 🍅
+                    </p>
+                )}
+            </div>
+
             {/* Start, Pause, Reset buttons */}
             <div className="flex justify-center items-center gap-4 mt-6">
                 {!isRunning ? (
