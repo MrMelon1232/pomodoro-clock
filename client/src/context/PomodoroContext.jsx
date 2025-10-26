@@ -94,6 +94,23 @@ export const PomodoroProvider = ({ children }) => {
         setActiveTask(null);
     }, []);
 
+    // Function to edit tasks
+    const editTask = useCallback(
+        (taskID, updates) => {
+            setTasks((prev) =>
+                prev.map((task) =>
+                    task.id === taskID ? { ...task, ...updates } : task
+                )
+            );
+
+            // Keep our active task state updated if its been changed
+            if (activeTask?.id === taskID) {
+                setActiveTask((prev) => ({ ...prev, ...updates }));
+            }
+        },
+        [activeTask]
+    );
+
     return (
         <PomodoroContext.Provider
             value={{
@@ -104,6 +121,7 @@ export const PomodoroProvider = ({ children }) => {
                 setActiveTask: manuallySetActiveTask,
                 completePomodoroForTask,
                 resetTasks,
+                editTask,
             }}
         >
             {children}
