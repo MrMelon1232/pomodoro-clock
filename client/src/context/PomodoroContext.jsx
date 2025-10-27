@@ -1,7 +1,7 @@
 import { createContext, useState, useCallback } from "react";
 
 // Pomodoro context to be shared between timer and task
-const PomodoroContext = createContext();
+export const PomodoroContext = createContext();
 
 // Pomororo provider
 export const PomodoroProvider = ({ children }) => {
