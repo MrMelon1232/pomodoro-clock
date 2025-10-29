@@ -31,6 +31,7 @@ export function usePomodoro(settings) {
     const [timeLeft, setTimeLeft] = useState(
         getModeDuration(MODES.WORK, settings)
     );
+    const [pomodoroCount, setPomodoroCount] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
 
     // Use effect to decrement our timer after start
@@ -54,12 +55,17 @@ export function usePomodoro(settings) {
         // Stop the timer when it reaches 0
         if (timeLeft === 0) {
             // Update our mode, current cycle, and the time left
-            const { nextMode, nextCycle } = getNextMode(mode, cycleCount);
+            const { nextMode, nextCycle, nextPomodoroCount } = getNextMode(
+                mode,
+                cycleCount,
+                pomodoroCount
+            );
             setMode(nextMode);
             setCycleCount(nextCycle);
+            setPomodoroCount(nextPomodoroCount);
             setTimeLeft(getModeDuration(nextMode, settings));
         }
-    }, [timeLeft, mode, cycleCount, settings, isRunning]);
+    }, [timeLeft, mode, cycleCount, pomodoroCount, settings, isRunning]);
 
     // Handlers
     const start = useCallback(() => setIsRunning(true), []);
