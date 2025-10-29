@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { usePomodoroContext } from "../../context/usePomodoroContext";
-import { MdEditNote } from "react-icons/md";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 
 export const TaskModal = ({ isOpen, onClose, task = null }) => {
@@ -57,13 +56,7 @@ export const TaskModal = ({ isOpen, onClose, task = null }) => {
                 onClick={(e) => e.stopPropagation()}
             >
                 <h3 className="text-lg font-semibold text-cream mb-4 text-center">
-                    {isEdit ? (
-                        <div>
-                            Edit Task <MdEditNote />
-                        </div>
-                    ) : (
-                        <div>Add Task</div>
-                    )}
+                    {isEdit ? <div>Edit Task</div> : <div>Add Task</div>}
                 </h3>
 
                 {/* Task Form */}

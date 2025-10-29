@@ -1,6 +1,7 @@
 import { createContext, useState, useCallback } from "react";
 
 // Pomodoro context to be shared between timer and task
+// eslint-disable-next-line react-refresh/only-export-components
 export const PomodoroContext = createContext();
 
 // Pomororo provider
@@ -83,9 +84,17 @@ export const PomodoroProvider = ({ children }) => {
     const manuallySetActiveTask = useCallback(
         (taskId) => {
             const task = tasks.find((task) => task.id === taskId);
-            if (task) setActiveTask(task);
+
+            // Uncheck and remove active task
+            if (activeTask && activeTask.id == task.id) {
+                setActiveTask(null);
+            }
+            // Mark task as active
+            else {
+                setActiveTask(task);
+            }
         },
-        [tasks]
+        [tasks, activeTask]
     );
 
     // Function to reset all current tasks
