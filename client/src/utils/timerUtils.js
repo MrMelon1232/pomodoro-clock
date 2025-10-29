@@ -60,19 +60,30 @@ export function calculateProgress(timeLeft, totalDuration) {
  * Get the next mode based on the current mode and cycle count.
  *
  * @param {string} currentMode - Current mode.
- * @param {number} cycleCount - Number of completed work sessions.
- * @returns {{ nextMode: string, nextCycle: number }} Object containing next mode and updated cycle count.
+ * @param {number} cycleCount - Number of completed work cycles.
+ * @param {number} pomodoroCount - Number of completed pomodoros.
+ * @returns {{ nextMode: string, nextCycle: number, nextPomodoroCount: number }}
  */
-export function getNextMode(currentMode, cycleCount) {
+export function getNextMode(currentMode, cycleCount, pomodoroCount) {
+    let nextMode = currentMode;
+    let nextCycle = cycleCount;
+    let nextPomodoroCount = pomodoroCount;
+
     if (currentMode === MODES.WORK) {
-        const nextCycle = cycleCount + 1;
-        const nextMode =
-            nextCycle % 4 === 0 ? MODES.LONG_BREAK : MODES.SHORT_BREAK;
-        return { nextMode, nextCycle };
-    } else {
-        return { nextMode: MODES.WORK, nextCycle: cycleCount };
+        nextPomodoroCount += 1;
+        nextMode =
+            nextPomodoroCount % 4 === 0 ? MODES.LONG_BREAK : MODES.SHORT_BREAK;
+    } else if (currentMode === MODES.LONG_BREAK) {
+        nextMode = MODES.WORK;
+        nextCycle += 1;
+    } else if (currentMode === MODES.SHORT_BREAK) {
+        nextMode = MODES.WORK;
     }
+
+    return { nextMode, nextCycle, nextPomodoroCount };
 }
+
+// SEPARATE CYCLES AND POMODORO COMPLETION COUNT | USE CYCLES FOR DATA ANALYTICS ONLY
 
 /**
  * Calculate the duration of the given mode based on user settings
