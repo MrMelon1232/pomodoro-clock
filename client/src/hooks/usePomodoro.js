@@ -28,10 +28,10 @@ export function usePomodoro(settings) {
     // States
     const [mode, setMode] = useState(MODES.WORK);
     const [cycleCount, setCycleCount] = useState(0);
+    const [pomodoroCount, setPomodoroCount] = useState(0);
     const [timeLeft, setTimeLeft] = useState(
         getModeDuration(MODES.WORK, settings)
     );
-    const [pomodoroCount, setPomodoroCount] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
 
     // Use effect to decrement our timer after start
@@ -47,25 +47,31 @@ export function usePomodoro(settings) {
         return () => clearInterval(interval);
     }, [isRunning]);
 
-    // Handle transitions between modes after time runs out
+    // Handle transitions after timer hits 0
     useEffect(() => {
-        // Prevents auto switch if the timer is not running
-        if (!isRunning && timeLeft === 0) return;
+        // Only act when timer finishes
+        if (timeLeft !== 0) return;
 
-        // Stop the timer when it reaches 0
-        if (timeLeft === 0) {
-            // Update our mode, current cycle, and the time left
-            const { nextMode, nextCycle, nextPomodoroCount } = getNextMode(
-                mode,
-                cycleCount,
-                pomodoroCount
-            );
-            setMode(nextMode);
-            setCycleCount(nextCycle);
-            setPomodoroCount(nextPomodoroCount);
-            setTimeLeft(getModeDuration(nextMode, settings));
+        // Stop running timer
+        setIsRunning(false);
+
+        // Update counters based on finished mode
+        if (mode === MODES.WORK) {
+            setPomodoroCount((prev) => prev + 1);
+        } else if (mode === MODES.LONG_BREAK) {
+            setCycleCount((prev) => prev + 1);
         }
-    }, [timeLeft, mode, cycleCount, pomodoroCount, settings, isRunning]);
+
+        // Determine next mode *after* counts are updated
+        setMode((prevMode) => {
+            const nextMode = getNextMode(
+                prevMode,
+                pomodoroCount + (mode === MODES.WORK ? 1 : 0)
+            );
+            setTimeLeft(getModeDuration(nextMode, settings));
+            return nextMode;
+        });
+    }, [timeLeft, mode, pomodoroCount, settings]);
 
     // Handlers
     const start = useCallback(() => setIsRunning(true), []);
@@ -74,6 +80,8 @@ export function usePomodoro(settings) {
         setIsRunning(false);
         setMode(MODES.WORK);
         setCycleCount(0);
+        // Uncomment if we also want to reset our pomodoro count
+        //setPomodoroCount(0);
         setTimeLeft(getModeDuration(MODES.WORK, settings));
     }, [settings]);
 
@@ -104,5 +112,7 @@ export function usePomodoro(settings) {
         stop,
         reset,
         changeMode,
+        pomodoroCount,
+        cycleCount,
     };
 }
