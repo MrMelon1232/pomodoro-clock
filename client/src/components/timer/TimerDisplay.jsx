@@ -7,9 +7,11 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { LuTimerReset } from "react-icons/lu";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { usePomodoroContext } from "../../context/usePomodoroContext";
-import { useEffect } from "react";
 
 export const TimerDisplay = (settings) => {
+    // Get values from our pomodoro context
+    const { activeTask, completePomodoroForTask } = usePomodoroContext();
+
     // Get values from our pomodoro timer logic
     const {
         mode,
@@ -20,26 +22,10 @@ export const TimerDisplay = (settings) => {
         stop,
         reset,
         changeMode,
-    } = usePomodoro(settings);
+    } = usePomodoro(settings, completePomodoroForTask);
 
     // Get custom styles from our mode styles
     const style = MODE_STYLES[mode];
-
-    // Get values from our pomodoro context
-    const { activeTask, completePomodoroForTask } = usePomodoroContext();
-
-    // Use effect to be executed on timer completion
-    useEffect(() => {
-        // check if the timer has reached 0 and we are in work mode
-        if (
-            !isRunning &&
-            formattedTime === "00:00" &&
-            mode == MODES.WORK &&
-            activeTask
-        ) {
-            completePomodoroForTask();
-        }
-    }, [isRunning, formattedTime, activeTask, mode, completePomodoroForTask]);
 
     return (
         <div className="flex flex-col justify-center items-center w-full py-6">

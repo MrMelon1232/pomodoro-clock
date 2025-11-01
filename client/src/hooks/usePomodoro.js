@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
     MODES,
     formatTime,
@@ -24,7 +24,7 @@ import {
  *   changeMode: function
  * }} Object containing the current timer state and control functions.
  */
-export function usePomodoro(settings) {
+export function usePomodoro(settings, completePomodoroForTask) {
     // States
     const [mode, setMode] = useState(MODES.WORK);
     const [cycleCount, setCycleCount] = useState(0);
@@ -47,22 +47,25 @@ export function usePomodoro(settings) {
         return () => clearInterval(interval);
     }, [isRunning]);
 
+    // Handle use ref to update on change of the function
+    const onWorkCompleteRef = useRef(completePomodoroForTask);
+    useEffect(() => {
+        onWorkCompleteRef.current = completePomodoroForTask;
+    }, [completePomodoroForTask]);
+
     // Handle transitions after timer hits 0
     useEffect(() => {
-        // Only act when timer finishes
         if (timeLeft !== 0) return;
 
-        // Stop running timer
         setIsRunning(false);
 
-        // Update counters based on finished mode
         if (mode === MODES.WORK) {
             setPomodoroCount((prev) => prev + 1);
+            onWorkCompleteRef.current?.();
         } else if (mode === MODES.LONG_BREAK) {
             setCycleCount((prev) => prev + 1);
         }
 
-        // Determine next mode *after* counts are updated
         setMode((prevMode) => {
             const nextMode = getNextMode(
                 prevMode,

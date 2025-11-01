@@ -23,7 +23,7 @@ export const MODES = {
 
 // Enum for default time for each mode
 export const DEFAULT_DURATIONS = {
-    [MODES.WORK]: 25 * 60,
+    [MODES.WORK]: 1 * 60,
     [MODES.SHORT_BREAK]: 5 * 60,
     [MODES.LONG_BREAK]: 15 * 60,
 };
@@ -69,8 +69,6 @@ export function getNextMode(currentMode, pomodoroCount) {
     }
     return MODES.WORK;
 }
-
-// SEPARATE CYCLES AND POMODORO COMPLETION COUNT | USE CYCLES FOR DATA ANALYTICS ONLY
 
 /**
  * Calculate the duration of the given mode based on user settings
