@@ -1,5 +1,5 @@
 // A reuseable toggle button
-export const Toggle = ({ enabled, onChange }) => {
+export const ToggleButton = ({ enabled, onChange }) => {
     return (
         <button
             onClick={() => onChange(!enabled)}
