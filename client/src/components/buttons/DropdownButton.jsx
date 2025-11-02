@@ -1,5 +1,5 @@
 // A reuseable dropdown with entry button
-export const Select = ({ label, value, onChange, options }) => {
+export const DropdownButton = ({ label, value, onChange, options }) => {
     return (
         <label className="flex flex-col gap-1">
             {label}
