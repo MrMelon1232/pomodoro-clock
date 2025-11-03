@@ -10,9 +10,16 @@ export const SettingsProvider = ({ children }) => {
         WORK: DEFAULT_DURATIONS[MODES.WORK],
         SHORT_BREAK: DEFAULT_DURATIONS[MODES.SHORT_BREAK],
         LONG_BREAK: DEFAULT_DURATIONS[MODES.LONG_BREAK],
-        autoStart: false,
-        notifications: false,
+        longBreakEvery: 4,
+        autoStartPomodoro: false,
+        autoStartBreak: false,
+        autoNextTask: false,
         autoDeleteTask: false,
+        soundOn: false,
+        soundLevel: 0,
+        notifications: false,
+        tickingSound: false,
+        vibration: false,
         theme: "dark",
     });
 
