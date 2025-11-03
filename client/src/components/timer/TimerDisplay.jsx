@@ -8,9 +8,9 @@ import { LuTimerReset } from "react-icons/lu";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { usePomodoroContext } from "../../context/usePomodoroContext";
 
-export const TimerDisplay = (settings) => {
-    // Get values from our pomodoro context
-    const { activeTask, completePomodoroForTask } = usePomodoroContext();
+export const TimerDisplay = () => {
+    // Get active task from pomodoro context
+    const { activeTask } = usePomodoroContext();
 
     // Get values from our pomodoro timer logic
     const {
@@ -22,7 +22,7 @@ export const TimerDisplay = (settings) => {
         stop,
         reset,
         changeMode,
-    } = usePomodoro(settings, completePomodoroForTask);
+    } = usePomodoro();
 
     // Get custom styles from our mode styles
     const style = MODE_STYLES[mode];
