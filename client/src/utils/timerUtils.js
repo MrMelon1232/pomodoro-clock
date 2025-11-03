@@ -23,7 +23,7 @@ export const MODES = {
 
 // Enum for default time for each mode
 export const DEFAULT_DURATIONS = {
-    [MODES.WORK]: 1 * 60,
+    [MODES.WORK]: 25 * 60,
     [MODES.SHORT_BREAK]: 5 * 60,
     [MODES.LONG_BREAK]: 15 * 60,
 };
