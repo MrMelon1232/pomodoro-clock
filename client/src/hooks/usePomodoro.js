@@ -6,6 +6,8 @@ import {
     getNextMode,
     getModeDuration,
 } from "../utils/timerUtils";
+import { usePomodoroContext } from "../context/usePomodoroContext";
+import { useSettingsContext } from "../context/useSettingsContext";
 
 /**
  * Pomodoro timer logic hook.
@@ -24,7 +26,11 @@ import {
  *   changeMode: function
  * }} Object containing the current timer state and control functions.
  */
-export function usePomodoro(settings, completePomodoroForTask) {
+export function usePomodoro() {
+    // Retrieve settings and completedPomodoroForTask function from contexts
+    const { settings } = useSettingsContext();
+    const { completePomodoroForTask } = usePomodoroContext();
+
     // States
     const [mode, setMode] = useState(MODES.WORK);
     const [cycleCount, setCycleCount] = useState(0);
@@ -33,6 +39,13 @@ export function usePomodoro(settings, completePomodoroForTask) {
         getModeDuration(MODES.WORK, settings)
     );
     const [isRunning, setIsRunning] = useState(false);
+
+    // Use effect to refresh time left on settings change
+    useEffect(() => {
+        if (!isRunning) {
+            setTimeLeft(getModeDuration(mode, settings));
+        }
+    }, [settings, mode, isRunning]);
 
     // Use effect to decrement our timer after start
     useEffect(() => {
