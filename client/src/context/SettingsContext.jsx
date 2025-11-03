@@ -7,13 +7,13 @@ export const SettingsContext = createContext();
 // Settings context and provider to be used by our timer component
 export const SettingsProvider = ({ children }) => {
     const [settings, setSettings] = useState({
-        workDuration: DEFAULT_DURATIONS[MODES.WORK],
-        shortBreak: DEFAULT_DURATIONS[MODES.SHORT_BREAK],
-        longBreak: DEFAULT_DURATIONS[MODES.LONG_BREAK],
+        WORK: DEFAULT_DURATIONS[MODES.WORK],
+        SHORT_BREAK: DEFAULT_DURATIONS[MODES.SHORT_BREAK],
+        LONG_BREAK: DEFAULT_DURATIONS[MODES.LONG_BREAK],
         autoStart: false,
-        theme: "dark",
         notifications: false,
         autoDeleteTask: false,
+        theme: "dark",
     });
 
     const updateSettings = useCallback((key, value) => {
