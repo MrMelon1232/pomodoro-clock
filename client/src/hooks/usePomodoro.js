@@ -82,7 +82,8 @@ export function usePomodoro() {
         setMode((prevMode) => {
             const nextMode = getNextMode(
                 prevMode,
-                pomodoroCount + (mode === MODES.WORK ? 1 : 0)
+                pomodoroCount + (mode === MODES.WORK ? 1 : 0),
+                settings.longBreakInterval
             );
             setTimeLeft(getModeDuration(nextMode, settings));
             return nextMode;
