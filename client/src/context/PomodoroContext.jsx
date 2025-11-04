@@ -46,34 +46,22 @@ export const PomodoroProvider = ({ children }) => {
     const completePomodoroForTask = useCallback(() => {
         if (!activeTaskId) return;
 
-        setTasks((prev) => {
-            const updatedTasks = prev.map((task) =>
-                task.id === activeTaskId
-                    ? {
-                          ...task,
-                          completedPomodoros: task.completedPomodoros + 1,
-                          done:
-                              task.completedPomodoros + 1 >=
-                              task.requiredPomodoros,
-                      }
-                    : task
-            );
+        setTasks((prev) =>
+            prev.map((task) => {
+                if (task.id !== activeTaskId) return task;
 
-            const updatedActive = updatedTasks.find(
-                (t) => t.id === activeTaskId
-            );
+                // If already done, do not increment again
+                if (task.done) return task;
 
-            if (updatedActive?.done) {
-                const nextTask = updatedTasks.find(
-                    (t) => t.order > updatedActive.order && !t.done
-                );
-                setActiveTaskId(nextTask?.id || null);
-            } else {
-                setActiveTaskId(updatedActive.id);
-            }
+                const newCount = task.completedPomodoros + 1;
 
-            return updatedTasks;
-        });
+                return {
+                    ...task,
+                    completedPomodoros: newCount,
+                    done: newCount >= task.requiredPomodoros,
+                };
+            })
+        );
     }, [activeTaskId]);
 
     // Function to manually set new active task
