@@ -8,11 +8,12 @@ export const PomodoroContext = createContext();
 export const PomodoroProvider = ({ children }) => {
     // Define values and states to be shared
     const [tasks, setTasks] = useState([]);
-    const [activeTask, setActiveTask] = useState(null);
+    const [activeTaskId, setActiveTaskId] = useState(null);
+    const activeTask = tasks.find((t) => t.id === activeTaskId) || null;
 
     // Function to add a task
-    const addTask = useCallback(
-        (title, requiredPomodoros = 1, notes) => {
+    const addTask = useCallback((title, requiredPomodoros = 1, notes) => {
+        setTasks((prev) => {
             const newTask = {
                 id: Date.now(),
                 title,
@@ -20,14 +21,12 @@ export const PomodoroProvider = ({ children }) => {
                 requiredPomodoros,
                 completedPomodoros: 0,
                 done: false,
-                order: tasks.length + 1,
+                order: prev.length + 1,
             };
 
-            // Append to our previous state our new task
-            setTasks((prev) => [...prev, newTask]);
-        },
-        [tasks]
-    );
+            return [...prev, newTask];
+        });
+    }, []);
 
     // Function to remove tasks
     const removeTask = useCallback((taskId) => {
@@ -45,80 +44,52 @@ export const PomodoroProvider = ({ children }) => {
 
     // Function to mark a completed pomodoro for a task
     const completePomodoroForTask = useCallback(() => {
-        // Exit if we have no active task
-        if (!activeTask) return;
+        if (!activeTaskId) return;
 
-        setTasks((prev) => {
-            const updatedTasks = prev.map((task) =>
-                task.id === activeTask.id
-                    ? {
-                          ...task,
-                          completedPomodoros: task.completedPomodoros + 1,
-                          done:
-                              task.completedPomodoros + 1 >=
-                              task.requiredPomodoros,
-                      }
-                    : task
-            );
+        setTasks((prev) =>
+            prev.map((task) => {
+                if (task.id !== activeTaskId) return task;
 
-            // Find the updated active task
-            const updatedActiveTask = updatedTasks.find(
-                (task) => task.id === activeTask.id
-            );
+                // If already done, do not increment again
+                if (task.done) return task;
 
-            // Find if we need to queue a new tasks as our active
-            if (updatedActiveTask?.done) {
-                const newTask = updatedTasks.find(
-                    (task) => task.order > activeTask.order && !task.done
-                );
-                setActiveTask(newTask || null);
-            } else {
-                setActiveTask(updatedActiveTask);
-            }
+                const newCount = task.completedPomodoros + 1;
 
-            return updatedTasks;
-        });
-    }, [activeTask]);
+                return {
+                    ...task,
+                    completedPomodoros: newCount,
+                    done: newCount >= task.requiredPomodoros,
+                };
+            })
+        );
+    }, [activeTaskId]);
 
     // Function to manually set new active task
     const manuallySetActiveTask = useCallback(
         (taskId) => {
-            const task = tasks.find((task) => task.id === taskId);
-
-            // Uncheck and remove active task
-            if (activeTask && activeTask.id == task.id) {
-                setActiveTask(null);
-            }
-            // Mark task as active
-            else {
-                setActiveTask(task);
+            if (activeTaskId === taskId) {
+                setActiveTaskId(null);
+            } else {
+                setActiveTaskId(taskId);
             }
         },
-        [tasks, activeTask]
+        [activeTaskId]
     );
 
     // Function to reset all current tasks
     const resetTasks = useCallback(() => {
         setTasks([]);
-        setActiveTask(null);
+        setActiveTaskId(null);
     }, []);
 
     // Function to edit tasks
-    const editTask = useCallback(
-        (taskID, updates) => {
-            setTasks((prev) =>
-                prev.map((task) =>
-                    task.id === taskID ? { ...task, ...updates } : task
-                )
-            );
-
-            // Keep our active task state updated if its been changed
-            if (activeTask?.id === taskID) {
-                setActiveTask((prev) => ({ ...prev, ...updates }));
-            }
-        },
-        [activeTask]
-    );
+    const editTask = useCallback((taskID, updates) => {
+        setTasks((prev) =>
+            prev.map((task) =>
+                task.id === taskID ? { ...task, ...updates } : task
+            )
+        );
+    }, []);
 
     return (
         <PomodoroContext.Provider
@@ -127,7 +98,7 @@ export const PomodoroProvider = ({ children }) => {
                 addTask,
                 removeTask,
                 activeTask,
-                setActiveTask: manuallySetActiveTask,
+                setActiveTaskId: manuallySetActiveTask,
                 completePomodoroForTask,
                 resetTasks,
                 editTask,

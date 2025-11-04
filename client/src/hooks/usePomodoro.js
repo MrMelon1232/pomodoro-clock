@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
     MODES,
     formatTime,
@@ -6,6 +6,8 @@ import {
     getNextMode,
     getModeDuration,
 } from "../utils/timerUtils";
+import { usePomodoroContext } from "../context/usePomodoroContext";
+import { useSettingsContext } from "../context/useSettingsContext";
 
 /**
  * Pomodoro timer logic hook.
@@ -24,7 +26,17 @@ import {
  *   changeMode: function
  * }} Object containing the current timer state and control functions.
  */
-export function usePomodoro(settings) {
+export function usePomodoro() {
+    // Retrieve settings and completedPomodoroForTask function from contexts
+    const { settings } = useSettingsContext();
+    const {
+        tasks,
+        removeTask,
+        activeTask,
+        setActiveTaskId,
+        completePomodoroForTask,
+    } = usePomodoroContext();
+
     // States
     const [mode, setMode] = useState(MODES.WORK);
     const [cycleCount, setCycleCount] = useState(0);
@@ -33,6 +45,13 @@ export function usePomodoro(settings) {
         getModeDuration(MODES.WORK, settings)
     );
     const [isRunning, setIsRunning] = useState(false);
+
+    // Use effect to refresh time left on settings change
+    useEffect(() => {
+        if (!isRunning) {
+            setTimeLeft(getModeDuration(mode, settings));
+        }
+    }, [settings, mode, isRunning]);
 
     // Use effect to decrement our timer after start
     useEffect(() => {
@@ -47,31 +66,83 @@ export function usePomodoro(settings) {
         return () => clearInterval(interval);
     }, [isRunning]);
 
+    // Handle use ref to update on change of the function
+    const onWorkCompleteRef = useRef(completePomodoroForTask);
+    useEffect(() => {
+        onWorkCompleteRef.current = completePomodoroForTask;
+    }, [completePomodoroForTask]);
+
     // Handle transitions after timer hits 0
     useEffect(() => {
-        // Only act when timer finishes
         if (timeLeft !== 0) return;
 
-        // Stop running timer
         setIsRunning(false);
 
-        // Update counters based on finished mode
+        // Handle completion of work period
         if (mode === MODES.WORK) {
+            // handle pomodoro increment count
             setPomodoroCount((prev) => prev + 1);
-        } else if (mode === MODES.LONG_BREAK) {
+            onWorkCompleteRef.current?.();
+        }
+
+        // Handle completion of break period
+        else if (mode === MODES.LONG_BREAK) {
             setCycleCount((prev) => prev + 1);
         }
 
-        // Determine next mode *after* counts are updated
-        setMode((prevMode) => {
-            const nextMode = getNextMode(
-                prevMode,
-                pomodoroCount + (mode === MODES.WORK ? 1 : 0)
-            );
-            setTimeLeft(getModeDuration(nextMode, settings));
-            return nextMode;
-        });
+        // Get the next mode based on the current one
+        const nextMode = getNextMode(
+            mode,
+            pomodoroCount + (mode === MODES.WORK ? 1 : 0),
+            settings.longBreakInterval
+        );
+
+        // Set Next mode and time left
+        setMode(nextMode);
+        setTimeLeft(getModeDuration(nextMode, settings));
+
+        // Check auto start rule for pomodoros
+        if (nextMode === MODES.WORK && settings.autoStartPomodoro) {
+            setIsRunning(true);
+        }
+
+        // Check auto start for breaks
+        if (
+            (nextMode === MODES.LONG_BREAK || nextMode === MODES.SHORT_BREAK) &&
+            settings.autoStartBreak
+        ) {
+            setIsRunning(true);
+        }
     }, [timeLeft, mode, pomodoroCount, settings]);
+
+    // Use effect to handle task completion or changes
+    useEffect(() => {
+        if (!activeTask) return;
+
+        if (activeTask.done) {
+            // auto delete completed task
+            if (settings.autoDeleteTask) {
+                removeTask(activeTask.id);
+            }
+
+            // auto switch next task
+            if (settings.autoNextTask) {
+                let nextTask =
+                    tasks.find((t) => t.order < activeTask.order && !t.done) || // fallback to earlier tasks
+                    tasks.find((t) => t.order > activeTask.order && !t.done) || // try forward
+                    null;
+
+                setActiveTaskId(nextTask?.id || null);
+            }
+        }
+    }, [
+        activeTask,
+        settings.autoDeleteTask,
+        settings.autoNextTask,
+        tasks,
+        removeTask,
+        setActiveTaskId,
+    ]);
 
     // Handlers
     const start = useCallback(() => setIsRunning(true), []);

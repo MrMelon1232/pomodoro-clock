@@ -61,16 +61,17 @@ export function calculateProgress(timeLeft, totalDuration) {
  *
  * @param {string} currentMode - Current mode.
  * @param {number} pomodoroCount - Number of completed pomodoros.
+ * @param {number} longBreakInterval - Number of iterations before a long break.
  * @returns { nextMode: string}
  */
-export function getNextMode(currentMode, pomodoroCount) {
+export function getNextMode(currentMode, pomodoroCount, longBreakInterval) {
     if (currentMode === MODES.WORK) {
-        return pomodoroCount % 4 === 0 ? MODES.LONG_BREAK : MODES.SHORT_BREAK;
+        return pomodoroCount % longBreakInterval === 0
+            ? MODES.LONG_BREAK
+            : MODES.SHORT_BREAK;
     }
     return MODES.WORK;
 }
-
-// SEPARATE CYCLES AND POMODORO COMPLETION COUNT | USE CYCLES FOR DATA ANALYTICS ONLY
 
 /**
  * Calculate the duration of the given mode based on user settings

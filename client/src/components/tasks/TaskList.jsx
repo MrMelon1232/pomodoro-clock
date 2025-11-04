@@ -8,7 +8,7 @@ import { TaskModal } from "./TaskModal";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 
 export const TaskList = () => {
-    const { tasks, removeTask, activeTask, setActiveTask, resetTasks } =
+    const { tasks, removeTask, activeTask, setActiveTaskId, resetTasks } =
         usePomodoroContext();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +43,7 @@ export const TaskList = () => {
                             key={task.id}
                             task={task}
                             isActive={activeTask?.id === task.id}
-                            onSelect={() => setActiveTask(task.id)}
+                            onSelect={() => setActiveTaskId(task.id)}
                             onRemove={() => removeTask(task.id)}
                         />
                     ))
