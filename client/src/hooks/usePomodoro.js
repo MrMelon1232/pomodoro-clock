@@ -72,6 +72,7 @@ export function usePomodoro() {
 
         setIsRunning(false);
 
+        // Increase cycle and pomodoro counts
         if (mode === MODES.WORK) {
             setPomodoroCount((prev) => prev + 1);
             onWorkCompleteRef.current?.();
@@ -79,15 +80,32 @@ export function usePomodoro() {
             setCycleCount((prev) => prev + 1);
         }
 
-        setMode((prevMode) => {
-            const nextMode = getNextMode(
-                prevMode,
-                pomodoroCount + (mode === MODES.WORK ? 1 : 0),
-                settings.longBreakInterval
-            );
+        // Get the next mode based on the current one
+        const nextMode = getNextMode(
+            mode,
+            pomodoroCount + (mode === MODES.WORK ? 1 : 0),
+            settings.longBreakInterval
+        );
+
+        // Set Next mode
+        setMode(() => {
+            nextMode;
             setTimeLeft(getModeDuration(nextMode, settings));
             return nextMode;
         });
+
+        // Check auto start rule for pomodoros
+        if (nextMode === MODES.WORK && settings.autoStartPomodoro) {
+            setIsRunning(true);
+        }
+
+        // Check auto start for breaks
+        if (
+            (nextMode === MODES.LONG_BREAK || nextMode === MODES.SHORT_BREAK) &&
+            settings.autoStartBreak
+        ) {
+            setIsRunning(true);
+        }
     }, [timeLeft, mode, pomodoroCount, settings]);
 
     // Handlers
