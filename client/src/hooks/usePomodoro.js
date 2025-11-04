@@ -29,7 +29,13 @@ import { useSettingsContext } from "../context/useSettingsContext";
 export function usePomodoro() {
     // Retrieve settings and completedPomodoroForTask function from contexts
     const { settings } = useSettingsContext();
-    const { completePomodoroForTask } = usePomodoroContext();
+    const {
+        tasks,
+        removeTask,
+        activeTask,
+        setActiveTaskId,
+        completePomodoroForTask,
+    } = usePomodoroContext();
 
     // States
     const [mode, setMode] = useState(MODES.WORK);
@@ -72,11 +78,15 @@ export function usePomodoro() {
 
         setIsRunning(false);
 
-        // Increase cycle and pomodoro counts
+        // Handle completion of work period
         if (mode === MODES.WORK) {
+            // handle pomodoro increment count
             setPomodoroCount((prev) => prev + 1);
             onWorkCompleteRef.current?.();
-        } else if (mode === MODES.LONG_BREAK) {
+        }
+
+        // Handle completion of break period
+        else if (mode === MODES.LONG_BREAK) {
             setCycleCount((prev) => prev + 1);
         }
 
@@ -87,12 +97,9 @@ export function usePomodoro() {
             settings.longBreakInterval
         );
 
-        // Set Next mode
-        setMode(() => {
-            nextMode;
-            setTimeLeft(getModeDuration(nextMode, settings));
-            return nextMode;
-        });
+        // Set Next mode and time left
+        setMode(nextMode);
+        setTimeLeft(getModeDuration(nextMode, settings));
 
         // Check auto start rule for pomodoros
         if (nextMode === MODES.WORK && settings.autoStartPomodoro) {
@@ -107,6 +114,35 @@ export function usePomodoro() {
             setIsRunning(true);
         }
     }, [timeLeft, mode, pomodoroCount, settings]);
+
+    // Use effect to handle task completion or changes
+    useEffect(() => {
+        if (!activeTask) return;
+
+        if (activeTask.done) {
+            // auto delete completed task
+            if (settings.autoDeleteTask) {
+                removeTask(activeTask.id);
+            }
+
+            // auto switch next task
+            if (settings.autoNextTask) {
+                let nextTask =
+                    tasks.find((t) => t.order < activeTask.order && !t.done) || // fallback to earlier tasks
+                    tasks.find((t) => t.order > activeTask.order && !t.done) || // try forward
+                    null;
+
+                setActiveTaskId(nextTask?.id || null);
+            }
+        }
+    }, [
+        activeTask,
+        settings.autoDeleteTask,
+        settings.autoNextTask,
+        tasks,
+        removeTask,
+        setActiveTaskId,
+    ]);
 
     // Handlers
     const start = useCallback(() => setIsRunning(true), []);
