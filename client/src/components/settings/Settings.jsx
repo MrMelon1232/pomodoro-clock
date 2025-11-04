@@ -1,6 +1,7 @@
 import { useSettingsContext } from "../../context/useSettingsContext";
 import { DurationInput } from "../buttons/DurationStepperButton";
 import { ToggleButton } from "../buttons/ToggleButton";
+import { ToolTip } from "../buttons/InfoToolTip";
 
 export const Settings = () => {
     // Get states and functions from settings context
@@ -28,16 +29,20 @@ export const Settings = () => {
                     onChange={(v) => updateSettings("LONG_BREAK", v * 60)}
                 />
 
-                <DurationInput
-                    label="Pomodoros before long break"
-                    value={settings.longBreakInterval}
-                    onChange={(v) => updateSettings("longBreakInterval", v)}
-                />
+                <div className="flex items-center gap-2">
+                    <ToolTip text="How many Pomodoros you complete before taking a long break (default is 4)." />
+                    <DurationInput
+                        label="Pomodoros before long break"
+                        value={settings.longBreakInterval}
+                        onChange={(v) => updateSettings("longBreakInterval", v)}
+                    />
+                </div>
             </div>
 
             {/* Auto Start Pomodoro setting */}
             <div className="flex flex-row justify-between w-full items-center">
                 <span>Auto Start Pomodoro</span>
+                <ToolTip text="Automatically start the next Pomodoro when the current break ends." />
                 <ToggleButton
                     enabled={settings.autoStartPomodoro}
                     onChange={(v) => updateSettings("autoStartPomodoro", v)}
@@ -47,6 +52,7 @@ export const Settings = () => {
             {/* Auto Start Break setting */}
             <div className="flex flex-row justify-between w-full items-center">
                 <span>Auto Start Break</span>
+                <ToolTip text="Automatically start your break when a Pomodoro ends." />
                 <ToggleButton
                     enabled={settings.autoStartBreak}
                     onChange={(v) => updateSettings("autoStartBreak", v)}
@@ -56,6 +62,7 @@ export const Settings = () => {
             {/* Auto Next Task setting */}
             <div className="flex flex-row justify-between w-full items-center">
                 <span>Auto Switch Next Task</span>
+                <ToolTip text="If enabled, automatically move to the next task after completing this one." />
                 <ToggleButton
                     enabled={settings.autoNextTask}
                     onChange={(v) => updateSettings("autoNextTask", v)}
@@ -65,6 +72,7 @@ export const Settings = () => {
             {/* Auto delete task setting */}
             <div className="flex flex-row justify-between w-full items-center">
                 <span>Auto Delete Task</span>
+                <ToolTip text="Automatically remove tasks when they are fully completed." />
                 <ToggleButton
                     enabled={settings.autoDeleteTask}
                     onChange={(v) => updateSettings("autoDeleteTask", v)}
@@ -73,15 +81,6 @@ export const Settings = () => {
 
             {/* Divider */}
             <div className="h-px w-full bg-sand/30 my-2" />
-
-            {/* Auto delete task setting */}
-            <div className="flex flex-row justify-between w-full items-center">
-                <span>Auto Delete Task</span>
-                <ToggleButton
-                    enabled={settings.autoDeleteTask}
-                    onChange={(v) => updateSettings("autoDeleteTask", v)}
-                />
-            </div>
 
             {/* Sound settings */}
             <div className="flex flex-row justify-between w-full items-center">
@@ -94,6 +93,7 @@ export const Settings = () => {
 
             {/* Sound Level setting */}
             <div className="flex flex-row justify-between w-full items-center">
+                <ToolTip text="Adjust the volume for timer sounds and alerts." />
                 <DurationInput
                     label="Sound Level"
                     value={settings.soundLevel}
@@ -104,6 +104,7 @@ export const Settings = () => {
             {/* Ticking Sound setting */}
             <div className="flex flex-row justify-between w-full items-center">
                 <span>Ticking Sound</span>
+                <ToolTip text="Play a soft ticking sound during the Pomodoro to help you stay focused" />
                 <ToggleButton
                     enabled={settings.tickingSound}
                     onChange={(v) => updateSettings("tickingSound", v)}
@@ -112,7 +113,8 @@ export const Settings = () => {
 
             {/* Vibration setting */}
             <div className="flex flex-row justify-between w-full items-center">
-                <span>Vibration</span>
+                <span>Vibration (Mobile only)</span>
+                <ToolTip text="Trigger a vibration or subtle alert when the timer ends (mobile supported)." />
                 <ToggleButton
                     enabled={settings.vibration}
                     onChange={(v) => updateSettings("vibration", v)}
@@ -121,6 +123,7 @@ export const Settings = () => {
 
             {/* Notifications setting */}
             <div className="flex flex-row justify-between w-full items-center">
+                <ToolTip text="Allow desktop/mobile notifications for timer events (requires browser permission)." />
                 <span>Notifications</span>
                 <ToggleButton
                     enabled={settings.notifications}
