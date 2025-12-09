@@ -97,16 +97,6 @@ export const SettingsProvider = ({ children }) => {
 
     const [backgroundIndex, setBackgroundIndex] = useState(0);
 
-    const nextBg = () => {
-        setBackgroundIndex((i) => (i + 1) % BACKGROUNDS.length);
-    };
-
-    const prevBg = () => {
-        setBackgroundIndex(
-            (i) => (i - 1 + BACKGROUNDS.length) % BACKGROUNDS.length
-        );
-    };
-
     const updateSettings = useCallback((key, value) => {
         setSettings((prev) => ({ ...prev, [key]: value }));
     }, []);
@@ -118,8 +108,7 @@ export const SettingsProvider = ({ children }) => {
                 updateSettings,
                 backgrounds: BACKGROUNDS,
                 backgroundIndex,
-                nextBg,
-                prevBg,
+                setBackgroundIndex,
             }}
         >
             {children}
