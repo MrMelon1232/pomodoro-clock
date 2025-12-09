@@ -3,9 +3,9 @@ import { usePomodoro } from "../../hooks/usePomodoro";
 import { MODE_STYLES } from "../../themes/modeStyles";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { SecondaryButton } from "../buttons/SecondaryButton";
+import { SecondaryButton } from "../ui/buttons/SecondaryButton";
 import { LuTimerReset } from "react-icons/lu";
-import { PrimaryButton } from "../buttons/PrimaryButton";
+import { PrimaryButton } from "../ui/buttons/PrimaryButton";
 import { usePomodoroContext } from "../../context/usePomodoroContext";
 
 export const TimerDisplay = () => {

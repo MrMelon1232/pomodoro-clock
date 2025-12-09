@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { usePomodoroContext } from "../../context/usePomodoroContext";
-import { PrimaryButton } from "../buttons/PrimaryButton";
+import { PrimaryButton } from "../ui/buttons/PrimaryButton";
 
 export const TaskModal = ({ isOpen, onClose, task = null }) => {
     const { addTask, editTask } = usePomodoroContext();

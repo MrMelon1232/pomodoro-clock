@@ -1,7 +1,7 @@
 import { useSettingsContext } from "../../context/useSettingsContext";
-import { DurationInput } from "../buttons/DurationStepperButton";
-import { ToggleButton } from "../buttons/ToggleButton";
-import { ToolTip } from "../buttons/InfoToolTip";
+import { DurationInput } from "../ui/buttons/DurationStepperButton";
+import { ToggleButton } from "../ui/buttons/ToggleButton";
+import { ToolTip } from "../ui/buttons/InfoToolTip";
 
 export const Settings = () => {
     // Get states and functions from settings context

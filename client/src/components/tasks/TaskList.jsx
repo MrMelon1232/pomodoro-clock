@@ -5,7 +5,7 @@ import { RiDeleteBinFill } from "react-icons/ri";
 import { MdAddCircle } from "react-icons/md";
 import { TaskCard } from "./TaskCard";
 import { TaskModal } from "./TaskModal";
-import { PrimaryButton } from "../buttons/PrimaryButton";
+import { PrimaryButton } from "../ui/buttons/PrimaryButton";
 
 export const TaskList = () => {
     const { tasks, removeTask, activeTask, setActiveTaskId, resetTasks } =
