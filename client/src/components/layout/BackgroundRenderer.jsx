@@ -1,5 +1,5 @@
-import { useSettingsContext } from "../../context/SettingsContext";
-import { useEffect, useState } from "./react";
+import { useSettingsContext } from "../../context/useSettingsContext";
+import { useEffect, useState } from "react";
 
 export const BackgroundRenderer = () => {
     const { backgrounds, backgroundIndex } = useSettingsContext();
@@ -15,6 +15,7 @@ export const BackgroundRenderer = () => {
         const handleChange = (event) => {
             setIsMobile(Boolean(event.matches));
         };
+
 
         setIsMobile(mq.matches);
 
@@ -36,7 +37,7 @@ export const BackgroundRenderer = () => {
             {/* Background Layer */}
             {currentBg.type === "color" && (
                 <div
-                    className="fixed inset-0 -z-10"
+                    className="fixed inset-0"
                     style={{
                         backgroundColor: currentBg.value,
                         transition: "background-color 0.6 ease",
@@ -46,13 +47,13 @@ export const BackgroundRenderer = () => {
 
             {currentBg.type === "image" && (
                 <div
-                    className="absolute inset-0 bg-center bg-cover"
+                    className="absolute inset-0 w-full h-full bg-center bg-cover"
                     style={{ backgroundImage: `url(${resolvedSrc})` }}
                 />
             )}
 
             {currentBg.type === "video" && (
-                <video key={resolvedSrc} className="absolute inset=0">
+                <video key={resolvedSrc} className="absolute inset-0 w-full h-full object-cover" autoPlay loop muted playsInline>
                     <source src={resolvedSrc} type="video/mp4" />
                 </video>
             )}
