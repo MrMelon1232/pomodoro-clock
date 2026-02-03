@@ -4,7 +4,8 @@ import { CarouselButton } from "../ui/buttons/CarouselButton";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 
-export const SelectorModal = () => {
+export const SelectorModal = ({isOpen}) => {
+
     const { backgrounds, backgroundIndex, setBackgroundIndex } =
         useSettingsContext();
 
@@ -17,16 +18,17 @@ export const SelectorModal = () => {
 
     const apply = () => {
         setBackgroundIndex(tempIndex);
-        onclose();
     };
+
+    if (!isOpen) return null;
 
     return (
         <div className="">
             <div className="">
-                <CarouselButton onClick={prev} icon={IoIosArrowBack} />
-                <span className="">{backgrounds[backgroundIndex].label}</span>
+                <CarouselButton onClick={prev} icon={<IoIosArrowBack size={15} />} />
+                <span className="">{backgrounds[tempIndex].label}</span>
 
-                <CarouselButton onClick={next} icon={IoIosArrowForward} />
+                <CarouselButton onClick={next} icon={<IoIosArrowForward size={15} />} />
             </div>
             <div className="">
                 <button onClick={apply}>Apply</button>
