@@ -5,13 +5,11 @@ import { IoImages } from "react-icons/io5";
 export const BackgroundTrigger = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     return (
-        <button onClick={() => setIsModalOpen(true)}>
-            <IoImages size={24} />
-            <SelectorModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                type="background"
-            />
-        </button>
+        <div> 
+            <button onClick={() => setIsModalOpen(!isModalOpen)}>
+                <IoImages size={24} />
+            </button>
+            <SelectorModal isOpen={isModalOpen}/>
+        </div>
     );
 };
