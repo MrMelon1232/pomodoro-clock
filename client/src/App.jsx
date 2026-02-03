@@ -7,6 +7,7 @@ import { DrawerButton } from "./components/ui/buttons/DrawerButton";
 import { FiSettings } from "react-icons/fi";
 import { Settings } from "./components/settings/Settings";
 import { BackgroundRenderer } from "./components/layout/BackgroundRenderer";
+import { BackgroundTrigger } from "./components/settings/BackgroundTrigger";
 
 function App() {
     const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
@@ -22,7 +23,7 @@ function App() {
                 {/* Container task drawer, settings, background changes and sound changes */}
                 <div className="grid grid-cols-3 gap-4">
                     {/* Background, sound preferences */}
-                    <div> dasdas</div>
+                    <BackgroundTrigger />
 
                     {/* Task drawer */}
                     <div className="flex justify-center">
